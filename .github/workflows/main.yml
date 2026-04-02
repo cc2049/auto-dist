@@ -20,15 +20,15 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18' # 根据你的项目需求调整版本
-          cache: 'npm' # 缓存依赖，加速构建
+          cache: 'pnpm' # 缓存依赖，加速构建
 
       # 3. 安装依赖
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
       # 4. 打包项目
       - name: Build project
-        run: npm run build
+        run: pnpm run build
 
       # 5. 部署到服务器
       - name: Deploy to Server
