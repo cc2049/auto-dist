@@ -1,6 +1,5 @@
 name: Build and Deploy
 
-# 触发条件：当向 main 或 master 分支推送代码时触发
 on:
   push:
     branches:
@@ -20,21 +19,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # 使用 Node.js 20 (LTS)
-          cache: 'pnpm'      # 开启 pnpm 缓存，加快安装速度
+          node-version: '20'
+          # 注意：这里缓存依然写 pnpm，npx 运行时也会生成锁文件，缓存依然有效
+          cache: 'pnpm'
 
-      # 3. 安装 pnpm (修复报错的关键步骤)
-      - name: Install pnpm
-        run: npm install -g pnpm@8
-
-      # 4. 安装依赖
+      # 3. 安装依赖 (使用 npx pnpm)
       - name: Install Dependencies
-        run: pnpm install
+        run: npx pnpm install
 
-      # 5. 构建项目
+      # 4. 构建项目 (使用 npx pnpm)
       - name: Build Project
-        run: pnpm run build
-        # 注意：如果你的 package.json 里 build 命令不同，请在这里修改
+        run: npx pnpm run build
+
+
 
       # 6. 部署到服务器 (通过 SSH)
       - name: Deploy to Server
