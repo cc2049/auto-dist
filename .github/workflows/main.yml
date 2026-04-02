@@ -15,21 +15,31 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. 设置 Node.js 环境
+      # 2. 设置 Node.js 环境 (只设置 Node，不设置 pnpm)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          # 注意：这里缓存依然写 pnpm，npx 运行时也会生成锁文件，缓存依然有效
-          cache: 'pnpm'
+          # 注意：这里先不要配置 cache，先保证能跑通
 
-      # 3. 安装依赖 (使用 npx pnpm)
+      # 3. 【关键步骤】使用官方插件安装 pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          # 这一步会自动把 pnpm 加入到系统路径中，解决找不到命令的问题
+
+      # 4. 安装依赖
       - name: Install Dependencies
-        run: npx pnpm install
+        run: pnpm install
 
-      # 4. 构建项目 (使用 npx pnpm)
+      # 5. 构建项目
       - name: Build Project
-        run: npx pnpm run build
+        run: pnpm run build
+
+      # 6. 部署到服务器 (这里是你原本的部署脚本，保持不变)
+      # - name: Deploy to Server
+      #   uses: ...
 
 
 
