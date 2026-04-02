@@ -1,0 +1,53 @@
+name: Deploy Vue3 App to Server
+
+# 触发条件：当代码推送到 main 分支时
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. 设置 Node.js 环境
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # 根据你的项目需求调整版本
+          cache: 'npm' # 缓存依赖，加速构建
+
+      # 3. 安装依赖
+      - name: Install dependencies
+        run: npm install
+
+      # 4. 打包项目
+      - name: Build project
+        run: npm run build
+
+      # 5. 部署到服务器
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # 在服务器上执行的脚本
+          script: |
+            cd ${{ secrets.DEPLOY_DIR }}
+            # 备份旧版本（可选）
+            # cp -r . ../backup_$(date +%Y%m%d%H%M%S) 2>/dev/null || true
+            # 清空旧文件
+            rm -rf ./*
+            # 将GitHub Actions工作区中的dist目录内容复制到部署目录
+            # 注意：这里需要用到一个技巧，因为dist在另一个路径
+            # 我们先将dist打包成tar，然后传输，再解压
+            cd ${{ github.workspace }}
+            tar -czf dist.tar.gz dist/
+            scp dist.tar.gz ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:${{ secrets.DEPLOY_DIR }}/
+            ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "cd ${{ secrets.DEPLOY_DIR }} && tar -xzf dist.tar.gz --strip-components=1 && rm dist.tar.gz"
