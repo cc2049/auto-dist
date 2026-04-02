@@ -31,7 +31,7 @@ jobs:
 
       # 4. 安装依赖
       - name: Install Dependencies
-        run: pnpm install
+        run: pnpm install --ignore-workspace
 
       # 5. 构建项目
       - name: Build Project
