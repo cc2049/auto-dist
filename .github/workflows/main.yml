@@ -36,6 +36,8 @@ jobs:
       # 5. 构建项目
       - name: Build Project
         run: pnpm run build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
 
       # 6. 部署到服务器 (这里是你原本的部署脚本，保持不变)
       # - name: Deploy to Server
