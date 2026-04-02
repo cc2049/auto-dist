@@ -56,6 +56,11 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           # 如果你是用 SSH Key 登录，请取消下面这行的注释，并删除 password 行
           # key: ${{ secrets.SERVER_SSH_KEY }}
+
+          # 重点检查下面这一行，必须和宝塔里的根目录一模一样
+          target: /www/wwwroot/8.155.37.232_82
+          # 源文件通常是 dist 文件夹下的所有东西
+          source: "dist/*"
           
           # 下面的脚本会在你的服务器上执行
           script: |
