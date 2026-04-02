@@ -68,4 +68,4 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             echo "部署完成！"
-            # 这里可以写重启 pm2 或者其他命令
+            # 这里可以写重启 pm2 或者其他命令 2
